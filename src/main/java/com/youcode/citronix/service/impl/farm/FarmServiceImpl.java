@@ -1,9 +1,7 @@
 package com.youcode.citronix.service.impl.farm;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +15,6 @@ import com.youcode.citronix.repository.farm.FarmRepository;
 import com.youcode.citronix.service.interfaces.farm.IFarmService;
 import com.youcode.citronix.validation.FarmValidator;
 
-import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -50,7 +47,7 @@ public class FarmServiceImpl implements IFarmService {
 
     @Override
     public List<FarmResponse> getAllFarms() {
-        List<Farm> farms = farmRepository.findAll();
+        List<Farm> farms = farmRepository.findByIsDeletedFalse();
         return farmMapper.toResponseList(farms);
     }
 
@@ -77,33 +74,15 @@ public class FarmServiceImpl implements IFarmService {
     }
 
     @Override
-    public List<FarmResponse> searchFarms(String name, String location, Double minArea, Double maxArea) {
-        Specification<Farm> spec = (root, query, cb) -> {
-            List<Predicate> predicates = new ArrayList<>();
+    public Double getMaximumTreeCapacity(Long farmId) {
+        Farm farm = findFarmById(farmId);
+        return farm.getArea() / 100;
+    }
 
-            if (name != null && !name.isEmpty()) {
-                predicates.add(cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
-            }
-
-            if (location != null && !location.isEmpty()) {
-                predicates.add(cb.like(cb.lower(root.get("location")), "%" + location.toLowerCase() + "%"));
-            }
-
-            if (minArea != null) {
-                predicates.add(cb.greaterThanOrEqualTo(root.get("area"), minArea));
-            }
-
-            if (maxArea != null) {
-                predicates.add(cb.lessThanOrEqualTo(root.get("area"), maxArea));
-            }
-
-            predicates.add(cb.isFalse(root.get("isDeleted")));
-
-            return cb.and(predicates.toArray(new Predicate[0]));
-        };
-
-        List<Farm> farms = farmRepository.findAll(spec);
-        return farmMapper.toResponseList(farms);
+    @Override
+    public boolean canAddTrees(Long farmId, int treeCount) {
+        Farm farm = findFarmById(farmId);
+        return farm.hasCapacityForTrees(treeCount);
     }
 
     private Farm findFarmById(Long id) {
