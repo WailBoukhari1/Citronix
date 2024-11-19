@@ -66,12 +66,6 @@ public class Field {
                 .count();
     }
 
-    public Double getTotalTreeProductivity() {
-        return trees.stream()
-                .filter(tree -> !tree.getIsDeleted())
-                .mapToDouble(Tree::getSeasonalProductivity)
-                .sum();
-    }
 
     public boolean hasCapacityForTrees(int additionalTrees) {
         int currentTrees = getActiveTreeCount();

@@ -46,27 +46,11 @@ public class HarvestDetail {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    // Business logic methods
-    public boolean isQuantityValid() {
-        return quantity <= tree.getSeasonalProductivity();
-    }
-
     public boolean isFieldValid() {
         return field.equals(tree.getField());
     }
 
     public boolean isActive() {
-        return !isDeleted && !harvest.getIsDeleted() && !tree.isActive() && !field.isActive();
-    }
-
-    @PrePersist
-    @PreUpdate
-    protected void validateHarvestDetail() {
-        if (!isFieldValid()) {
-            throw new IllegalStateException("Tree must belong to the specified field");
-        }
-        if (!isQuantityValid()) {
-            throw new IllegalStateException("Harvest quantity cannot exceed tree's seasonal productivity");
-        }
+        return !isDeleted && !harvest.getIsDeleted() && !tree.getIsDeleted() && !field.isActive();
     }
 }
