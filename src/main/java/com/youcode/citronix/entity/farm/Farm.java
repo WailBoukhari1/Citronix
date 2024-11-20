@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter @Setter
@@ -51,9 +52,11 @@ public class Farm {
     private Long version;
 
     @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
 
     // Core business logic methods
@@ -78,9 +81,19 @@ public class Farm {
     }
 
     @PreUpdate
-    protected void validateFarm() {
+    protected void validate() {
         if (getTotalFieldArea() > area) {
             throw new IllegalStateException("Total field area cannot exceed farm area");
         }
+    }
+
+    // Example method for multi-criteria search
+    public static List<Farm> searchFarms(List<Farm> farms, String name, String location, Double minArea, Double maxArea) {
+        return farms.stream()
+                .filter(farm -> (name == null || farm.getName().contains(name)) &&
+                                (location == null || farm.getLocation().contains(location)) &&
+                                (minArea == null || farm.getArea() >= minArea) &&
+                                (maxArea == null || farm.getArea() <= maxArea))
+                .collect(Collectors.toList());
     }
 }

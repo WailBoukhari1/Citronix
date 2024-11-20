@@ -77,23 +77,4 @@ public class FarmController {
         farmService.deleteFarm(id);
         return ResponseEntity.noContent().build();
     }
-
-    @GetMapping("/{id}/tree-capacity")
-    @Operation(summary = "Get maximum tree capacity")
-    @ApiResponse(responseCode = "200", description = "Capacity calculated successfully")
-    @ApiResponse(responseCode = "404", description = "Farm not found")
-    public ResponseEntity<Double> getTreeCapacity(
-            @Parameter(description = "Farm ID") @PathVariable Long id) {
-        return ResponseEntity.ok(farmService.getMaximumTreeCapacity(id));
-    }
-
-    @GetMapping("/{id}/can-add-trees")
-    @Operation(summary = "Check if trees can be added")
-    @ApiResponse(responseCode = "200", description = "Check completed successfully")
-    @ApiResponse(responseCode = "404", description = "Farm not found")
-    public ResponseEntity<Boolean> checkTreeCapacity(
-            @Parameter(description = "Farm ID") @PathVariable Long id,
-            @Parameter(description = "Number of trees") @RequestParam int treeCount) {
-        return ResponseEntity.ok(farmService.canAddTrees(id, treeCount));
-    }
 }

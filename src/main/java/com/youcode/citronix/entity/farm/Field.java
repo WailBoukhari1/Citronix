@@ -42,21 +42,23 @@ public class Field {
     @Version
     private Long version;
 
+    @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
     @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
-
     @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+    protected void validate() {
+        if (!isAreaValid()) {
+            throw new IllegalStateException("Field area exceeds available farm area");
+        }
+        if (getActiveTreeCount() > getMaxTreeCapacity()) {
+            throw new IllegalStateException("Field contains more trees than its capacity");
+        }
     }
 
     // Business logic methods
@@ -87,16 +89,5 @@ public class Field {
 
     public Double getMaxTreeCapacity() {
         return area / 100; // 100m² per tree
-    }
-
-    @PrePersist
-    @PreUpdate
-    protected void validateField() {
-        if (!isAreaValid()) {
-            throw new IllegalStateException("Field area exceeds available farm area");
-        }
-        if (getActiveTreeCount() > getMaxTreeCapacity()) {
-            throw new IllegalStateException("Field contains more trees than its capacity");
-        }
     }
 }

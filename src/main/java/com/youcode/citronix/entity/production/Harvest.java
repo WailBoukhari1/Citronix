@@ -41,22 +41,20 @@ public class Harvest {
     @Version
     private Long version;
 
+    @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        updatedAt = LocalDateTime.now();
-    }
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Season season;
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
+    @ManyToOne
+    private Farm farm;
 
     public Double getTotalQuantity() {
         return harvestDetails.stream()
@@ -79,5 +77,11 @@ public class Harvest {
                 .mapToDouble(Sale::getPricePerUnit)
                 .average()
                 .orElse(0.0);
+    }
+
+    public boolean isUniquePerSeason() {
+        return farm.getHarvests().stream()
+                .filter(h -> h.getSeason() == this.season && !h.getIsDeleted())
+                .count() <= 1;
     }
 }

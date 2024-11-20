@@ -12,13 +12,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HarvestDetailRequest {
-    @NotNull(message = "Tree ID is required")
+    @NotNull(message = "Harvest ID cannot be null")
+    private Long harvestId;
+
+    @NotNull(message = "Tree ID cannot be null")
     private Long treeId;
 
-    @NotNull(message = "Field ID is required")
+    @NotNull(message = "Field ID cannot be null")
     private Long fieldId;
 
-    @NotNull(message = "Quantity is required")
-    @Positive(message = "Quantity must be positive")
+    @NotNull(message = "Quantity cannot be null")
+    @Positive(message = "Quantity must be greater than 0")
     private Double quantity;
 }

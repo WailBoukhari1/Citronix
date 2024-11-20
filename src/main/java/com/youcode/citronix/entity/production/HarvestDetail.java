@@ -41,9 +41,11 @@ public class HarvestDetail {
     private Long version;
 
     @CreationTimestamp
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
 
     public boolean isFieldValid() {
@@ -52,5 +54,9 @@ public class HarvestDetail {
 
     public boolean isActive() {
         return !isDeleted && !harvest.getIsDeleted() && !tree.getIsDeleted() && !field.isActive();
+    }
+
+    public boolean isUniqueHarvestPerSeason() {
+        return harvest.isUniquePerSeason();
     }
 }
