@@ -70,15 +70,6 @@ public class Farm {
                 .count();
     }
 
-    public boolean hasCapacityForTrees(int additionalTrees) {
-        int currentTrees = fields.stream()
-                .filter(field -> !field.getIsDeleted())
-                .mapToInt(Field::getActiveTreeCount)
-                .sum();
-        double maxTrees = area / 100; // 100m² per tree
-        return (currentTrees + additionalTrees) <= maxTrees;
-    }
-
     @PrePersist
     protected void onCreate() {
         if (creationDate == null) {

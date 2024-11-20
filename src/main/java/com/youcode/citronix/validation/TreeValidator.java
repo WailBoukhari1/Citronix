@@ -35,9 +35,4 @@ public class TreeValidator {
         }
     }
 
-    private void validateTreeInField(Field field) {
-        if (!field.getFarm().canAddTrees(1)) {
-            throw new TreeException("Farm has reached maximum tree capacity");
-        }
-    }
 }

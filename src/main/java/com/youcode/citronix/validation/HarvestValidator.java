@@ -73,4 +73,21 @@ public class HarvestValidator {
             throw new HarvestException("Cannot update a deleted harvest");
         }
     }
+
+    private void validateSeasonalHarvest(LocalDateTime harvestDate) {
+        int month = harvestDate.getMonthValue();
+        Season season;
+        
+        if (month <= 3) season = Season.WINTER;
+        else if (month <= 6) season = Season.SPRING;
+        else if (month <= 9) season = Season.SUMMER;
+        else season = Season.AUTUMN;
+        
+        LocalDateTime seasonStart = harvestDate.withMonth(season.getStartMonth()).withDayOfMonth(1);
+        LocalDateTime seasonEnd = seasonStart.plusMonths(3).minusDays(1);
+        
+        if (harvestRepository.existsByHarvestDateBetween(seasonStart, seasonEnd)) {
+            throw new HarvestException("A harvest already exists for this season");
+        }
+    }
 } 

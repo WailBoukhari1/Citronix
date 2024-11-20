@@ -32,6 +32,9 @@ public class Harvest {
     @OneToMany(mappedBy = "harvest", cascade = CascadeType.ALL)
     private List<HarvestDetail> harvestDetails = new ArrayList<>();
 
+    @OneToMany(mappedBy = "harvest", cascade = CascadeType.ALL)
+    private List<Sale> sales = new ArrayList<>();
+
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
@@ -60,5 +63,21 @@ public class Harvest {
                 .filter(detail -> !detail.getIsDeleted())
                 .mapToDouble(HarvestDetail::getQuantity)
                 .sum();
+    }
+
+    public Double getRemainingQuantity() {
+        Double totalSold = sales.stream()
+                .filter(sale -> !sale.getIsDeleted())
+                .mapToDouble(Sale::getQuantity)
+                .sum();
+        return getTotalQuantity() - totalSold;
+    }
+
+    public Double getAveragePrice() {
+        return sales.stream()
+                .filter(sale -> !sale.getIsDeleted())
+                .mapToDouble(Sale::getPricePerUnit)
+                .average()
+                .orElse(0.0);
     }
 }

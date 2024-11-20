@@ -56,21 +56,14 @@ public class Sale {
     }
 
     public boolean isQuantityValid() {
-        return harvest.hasRemainingQuantity(quantity);
+        return quantity <= harvest.getRemainingQuantity();
     }
 
     public boolean isActive() {
         return !getIsDeleted() && !harvest.getIsDeleted() && !farm.getIsDeleted();
     }
 
-    public boolean isPriceReasonable() {
-        Double avgPrice = harvest.getAveragePrice();
-        // Price is considered reasonable if it's within ±20% of average
-        return avgPrice == 0 || 
-               (pricePerUnit >= avgPrice * 0.8 && pricePerUnit <= avgPrice * 1.2);
-    }
-
     public boolean isSaleDateValid() {
-        return !saleDate.isBefore(harvest.getHarvestDate());
+        return !saleDate.isBefore(harvest.getHarvestDate().toLocalDate());
     }
 }

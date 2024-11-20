@@ -73,18 +73,6 @@ public class FarmServiceImpl implements IFarmService {
         farmRepository.save(farm);
     }
 
-    @Override
-    public Double getMaximumTreeCapacity(Long farmId) {
-        Farm farm = findFarmById(farmId);
-        return farm.getArea() / 100;
-    }
-
-    @Override
-    public boolean canAddTrees(Long farmId, int treeCount) {
-        Farm farm = findFarmById(farmId);
-        return farm.hasCapacityForTrees(treeCount);
-    }
-
     private Farm findFarmById(Long id) {
         return farmRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Farm not found with id: " + id));

@@ -11,6 +11,4 @@ public interface IFarmService {
     List<FarmResponse> getAllFarms();
     FarmResponse updateFarm(Long id, FarmRequest request);
     void deleteFarm(Long id);
-    Double getMaximumTreeCapacity(Long farmId);
-    boolean canAddTrees(Long farmId, int treeCount);
 }
