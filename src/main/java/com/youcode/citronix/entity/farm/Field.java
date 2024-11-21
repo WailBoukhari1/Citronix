@@ -33,9 +33,6 @@ public class Field {
     @OneToMany(mappedBy = "field", cascade = CascadeType.ALL)
     private List<Tree> trees = new ArrayList<>();
 
-    @OneToMany(mappedBy = "field", cascade = CascadeType.ALL)
-    private List<HarvestDetail> harvestDetails = new ArrayList<>();
-
     @Column(nullable = false)
     private Boolean isDeleted = false;
 

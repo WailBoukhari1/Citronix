@@ -1,11 +1,14 @@
 package com.youcode.citronix.service.impl.sales;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.youcode.citronix.dto.request.sales.SaleRequest;
+import com.youcode.citronix.dto.response.PageResponse;
 import com.youcode.citronix.dto.response.sales.SaleResponse;
 import com.youcode.citronix.entity.farm.Farm;
 import com.youcode.citronix.entity.production.Harvest;
@@ -53,9 +56,41 @@ public class SaleServiceImpl implements ISaleService {
     }
 
     @Override
-    public List<SaleResponse> getAllSales() {
-        List<Sale> sales = saleRepository.findByIsDeletedFalse();
-        return saleMapper.toResponseList(sales);
+    public PageResponse<SaleResponse> getAllSales(int page, int size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? 
+            Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Sale> salePage = saleRepository.findByIsDeletedFalse(pageable);
+        Page<SaleResponse> responsePage = salePage.map(saleMapper::toResponse);
+        
+        return PageResponse.fromPage(responsePage);
+    }
+
+    @Override
+    public PageResponse<SaleResponse> getSalesByHarvestId(Long harvestId, int page, int size, String sortBy, String sortDir) {
+        Harvest harvest = findHarvestById(harvestId);
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? 
+            Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Sale> salePage = saleRepository.findByHarvestAndIsDeletedFalse(harvest, pageable);
+        Page<SaleResponse> responsePage = salePage.map(saleMapper::toResponse);
+        
+        return PageResponse.fromPage(responsePage);
+    }
+
+    @Override
+    public PageResponse<SaleResponse> getSalesByFarmId(Long farmId, int page, int size, String sortBy, String sortDir) {
+        Farm farm = findFarmById(farmId);
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? 
+            Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Sale> salePage = saleRepository.findByFarmAndIsDeletedFalse(farm, pageable);
+        Page<SaleResponse> responsePage = salePage.map(saleMapper::toResponse);
+        
+        return PageResponse.fromPage(responsePage);
     }
 
     @Override

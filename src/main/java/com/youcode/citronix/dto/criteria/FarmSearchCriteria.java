@@ -1,8 +1,7 @@
 package com.youcode.citronix.dto.criteria;
 
-import java.time.LocalDate;
-
 import lombok.Data;
+import java.time.LocalDateTime;
 
 @Data
 public class FarmSearchCriteria {
@@ -10,7 +9,6 @@ public class FarmSearchCriteria {
     private String location;
     private Double minArea;
     private Double maxArea;
-    private LocalDate startDate;
-    private LocalDate endDate;
-    private Boolean isDeleted;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
 } 

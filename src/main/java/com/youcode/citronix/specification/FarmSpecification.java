@@ -1,55 +1,45 @@
 package com.youcode.citronix.specification;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
 
 import com.youcode.citronix.dto.criteria.FarmSearchCriteria;
 import com.youcode.citronix.entity.farm.Farm;
-
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
 public class FarmSpecification {
-    public static Specification<Farm> withCriteria(FarmSearchCriteria criteria) {
-        return (root, query, cb) -> {
-            Predicate predicate = cb.conjunction();
+    public Specification<Farm> withCriteria(FarmSearchCriteria criteria) {
+        return (Root<Farm> root, CriteriaQuery<?> query, CriteriaBuilder builder) -> {
+            List<Predicate> predicates = new ArrayList<>();
 
-            if (criteria.getName() != null) {
-                predicate = cb.and(predicate, 
-                    cb.like(cb.lower(root.get("name")), 
+            if (criteria.getName() != null && !criteria.getName().isEmpty()) {
+                predicates.add(builder.like(builder.lower(root.get("name")), 
                     "%" + criteria.getName().toLowerCase() + "%"));
             }
 
-            if (criteria.getLocation() != null) {
-                predicate = cb.and(predicate, 
-                    cb.like(cb.lower(root.get("location")), 
-                    "%" + criteria.getLocation().toLowerCase() + "%"));
-            }
-
             if (criteria.getMinArea() != null) {
-                predicate = cb.and(predicate, 
-                    cb.greaterThanOrEqualTo(root.get("area"), criteria.getMinArea()));
+                predicates.add(builder.greaterThanOrEqualTo(root.get("area"), criteria.getMinArea()));
             }
 
             if (criteria.getMaxArea() != null) {
-                predicate = cb.and(predicate, 
-                    cb.lessThanOrEqualTo(root.get("area"), criteria.getMaxArea()));
+                predicates.add(builder.lessThanOrEqualTo(root.get("area"), criteria.getMaxArea()));
             }
 
-            if (criteria.getStartDate() != null) {
-                predicate = cb.and(predicate, 
-                    cb.greaterThanOrEqualTo(root.get("creationDate"), criteria.getStartDate()));
+            if (criteria.getLocation() != null && !criteria.getLocation().isEmpty()) {
+                predicates.add(builder.like(builder.lower(root.get("location")), 
+                    "%" + criteria.getLocation().toLowerCase() + "%"));
             }
 
-            if (criteria.getEndDate() != null) {
-                predicate = cb.and(predicate, 
-                    cb.lessThanOrEqualTo(root.get("creationDate"), criteria.getEndDate()));
-            }
+            predicates.add(builder.equal(root.get("isDeleted"), false));
 
-            if (criteria.getIsDeleted() != null) {
-                predicate = cb.and(predicate, 
-                    cb.equal(root.get("isDeleted"), criteria.getIsDeleted()));
-            }
-
-            return predicate;
+            return builder.and(predicates.toArray(new Predicate[0]));
         };
     }
 }

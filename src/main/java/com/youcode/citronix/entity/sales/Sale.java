@@ -58,7 +58,7 @@ public class Sale {
     }
 
     public boolean isQuantityValid() {
-        return quantity <= harvest.getRemainingQuantity();
+        return quantity <= harvest.getTotalQuantity();
     }
 
     public boolean isActive() {

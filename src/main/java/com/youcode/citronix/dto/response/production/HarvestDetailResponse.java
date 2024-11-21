@@ -16,11 +16,10 @@ public class HarvestDetailResponse {
     private Long harvestId;
     private Long treeId;
     private String treeName;
-    private Long fieldId;
-    private String fieldName;
     private Double quantity;
+    private Double treeProductivity;
     private Boolean isDeleted;
-    private Long version;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Long version;
 }

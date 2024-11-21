@@ -83,7 +83,7 @@ public class FarmController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/search")
+    @PostMapping("/search")
     @Operation(summary = "Search farms with criteria, pagination and sorting")
     @ApiResponse(responseCode = "200", description = "Search completed successfully")
     public ResponseEntity<PageResponse<FarmResponse>> searchFarms(

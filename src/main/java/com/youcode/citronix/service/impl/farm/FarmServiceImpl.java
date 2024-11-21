@@ -1,7 +1,5 @@
 package com.youcode.citronix.service.impl.farm;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -12,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.youcode.citronix.dto.criteria.FarmSearchCriteria;
 import com.youcode.citronix.dto.request.farm.FarmRequest;
-import com.youcode.citronix.dto.response.farm.FarmResponse;
 import com.youcode.citronix.dto.response.PageResponse;
+import com.youcode.citronix.dto.response.farm.FarmResponse;
 import com.youcode.citronix.entity.farm.Farm;
 import com.youcode.citronix.exception.farm.FarmException;
 import com.youcode.citronix.mapper.farm.FarmMapper;
@@ -99,8 +97,7 @@ public class FarmServiceImpl implements IFarmService {
             Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         
         Pageable pageable = PageRequest.of(page, size, sort);
-        Specification<Farm> spec = FarmSpecification.withCriteria(criteria);
-        
+        Specification<Farm> spec = farmSpecification.withCriteria(criteria);        
         Page<Farm> farmPage = farmRepository.findAll(spec, pageable);
         Page<FarmResponse> responsePage = farmPage.map(farmMapper::toResponse);
         

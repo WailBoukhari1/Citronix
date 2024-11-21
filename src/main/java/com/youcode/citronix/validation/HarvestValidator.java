@@ -31,6 +31,9 @@ public class HarvestValidator {
         if (request.getFarmId() == null) {
             throw new HarvestException("Farm ID cannot be null");
         }
+        if (request.getSeason() == null) {
+            throw new HarvestException("Season cannot be null");
+        }
     }
 
     private void validateFarm(Farm farm) {

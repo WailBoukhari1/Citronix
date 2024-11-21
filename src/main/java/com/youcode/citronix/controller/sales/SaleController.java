@@ -1,7 +1,5 @@
 package com.youcode.citronix.controller.sales;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,9 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.youcode.citronix.dto.request.sales.SaleRequest;
+import com.youcode.citronix.dto.response.PageResponse;
 import com.youcode.citronix.dto.response.sales.SaleResponse;
 import com.youcode.citronix.service.interfaces.sales.ISaleService;
 
@@ -56,10 +56,38 @@ public class SaleController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all sales")
+    @Operation(summary = "Get all sales with pagination and sorting")
     @ApiResponse(responseCode = "200", description = "Sales retrieved successfully")
-    public ResponseEntity<List<SaleResponse>> getAllSales() {
-        return ResponseEntity.ok(saleService.getAllSales());
+    public ResponseEntity<PageResponse<SaleResponse>> getAllSales(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        return ResponseEntity.ok(saleService.getAllSales(page, size, sortBy, sortDir));
+    }
+
+    @GetMapping("/harvest/{harvestId}")
+    @Operation(summary = "Get sales by harvest ID with pagination and sorting")
+    @ApiResponse(responseCode = "200", description = "Sales retrieved successfully")
+    public ResponseEntity<PageResponse<SaleResponse>> getSalesByHarvestId(
+            @PathVariable Long harvestId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        return ResponseEntity.ok(saleService.getSalesByHarvestId(harvestId, page, size, sortBy, sortDir));
+    }
+
+    @GetMapping("/farm/{farmId}")
+    @Operation(summary = "Get sales by farm ID with pagination and sorting")
+    @ApiResponse(responseCode = "200", description = "Sales retrieved successfully")
+    public ResponseEntity<PageResponse<SaleResponse>> getSalesByFarmId(
+            @PathVariable Long farmId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        return ResponseEntity.ok(saleService.getSalesByFarmId(farmId, page, size, sortBy, sortDir));
     }
 
     @PutMapping("/{id}")

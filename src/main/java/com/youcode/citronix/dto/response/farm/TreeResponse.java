@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -16,6 +17,7 @@ public class TreeResponse {
     private String name;
     private Long fieldId;
     private String fieldName;
+    private LocalDate plantationDate;
     private Boolean isDeleted;
     private Long version;
     private LocalDateTime createdAt;

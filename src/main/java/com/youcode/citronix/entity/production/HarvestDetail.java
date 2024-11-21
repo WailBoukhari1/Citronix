@@ -1,8 +1,11 @@
 package com.youcode.citronix.entity.production;
 
-import com.youcode.citronix.entity.farm.Field;
+import com.youcode.citronix.entity.enums.Season;
 import com.youcode.citronix.entity.farm.Tree;
+import com.youcode.citronix.exception.production.HarvestDetailException;
+
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -27,14 +30,12 @@ public class HarvestDetail {
     @JoinColumn(name = "tree_id", nullable = false)
     private Tree tree;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "field_id", nullable = false)
-    private Field field;
-
     @Column(nullable = false)
+    @Positive(message = "Quantity must be positive")
     private Double quantity;
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isDeleted = false;
 
     @Version
@@ -48,15 +49,4 @@ public class HarvestDetail {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    public boolean isFieldValid() {
-        return field.equals(tree.getField());
-    }
-
-    public boolean isActive() {
-        return !isDeleted && !harvest.getIsDeleted() && !tree.getIsDeleted() && !field.isActive();
-    }
-
-    public boolean isUniqueHarvestPerSeason() {
-        return harvest.isUniquePerSeason();
-    }
 }

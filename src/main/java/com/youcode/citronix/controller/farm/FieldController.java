@@ -1,7 +1,5 @@
 package com.youcode.citronix.controller.farm;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -12,9 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.youcode.citronix.dto.request.farm.FieldRequest;
+import com.youcode.citronix.dto.response.PageResponse;
 import com.youcode.citronix.dto.response.farm.FieldResponse;
 import com.youcode.citronix.service.interfaces.farm.IFieldService;
 
@@ -53,15 +53,15 @@ public class FieldController {
     @Operation(summary = "Get fields by farm ID")
     @ApiResponse(responseCode = "200", description = "Fields retrieved successfully")
     @ApiResponse(responseCode = "404", description = "Farm not found")
-    public ResponseEntity<List<FieldResponse>> getFieldsByFarmId(@PathVariable Long farmId) {
-        return ResponseEntity.ok(fieldService.getFieldsByFarmId(farmId));
+    public ResponseEntity<PageResponse<FieldResponse>> getFieldsByFarmId(@PathVariable Long farmId, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy, @RequestParam(defaultValue = "asc") String sortDir) {
+        return ResponseEntity.ok(fieldService.getFieldsByFarmId(farmId, page, size, sortBy, sortDir));
     }
 
     @GetMapping
     @Operation(summary = "Get all fields")
     @ApiResponse(responseCode = "200", description = "Fields retrieved successfully")
-    public ResponseEntity<List<FieldResponse>> getAllFields() {
-        return ResponseEntity.ok(fieldService.getAllFields());
+    public ResponseEntity<PageResponse<FieldResponse>> getAllFields(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size, @RequestParam(defaultValue = "id") String sortBy, @RequestParam(defaultValue = "asc") String sortDir) {
+        return ResponseEntity.ok(fieldService.getAllFields(page, size, sortBy, sortDir));
     }
 
     @PutMapping("/{id}")

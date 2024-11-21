@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.youcode.citronix.dto.request.farm.TreeRequest;
+import com.youcode.citronix.dto.response.PageResponse;
 import com.youcode.citronix.dto.response.farm.TreeResponse;
 import com.youcode.citronix.entity.farm.Field;
 import com.youcode.citronix.entity.farm.Tree;
@@ -104,7 +105,7 @@ public class TreeServiceImpl implements ITreeService {
         Tree tree = findTreeById(id);
         
         // Check if tree has active harvest details
-        List<HarvestDetail> harvestDetails = harvestDetailRepository.findByTreeIdAndIsDeletedFalse(tree.getId());
+        List<HarvestDetail> harvestDetails = harvestDetailRepository.findByTree_IdAndIsDeletedFalse(tree.getId());
         if (!harvestDetails.isEmpty()) {
             throw new TreeException("Cannot delete tree with active harvest details. Please delete all harvest details first");
         }

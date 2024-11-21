@@ -1,5 +1,6 @@
 package com.youcode.citronix.dto.request.sales;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,7 @@ public class SaleRequest {
     private Double pricePerUnit;
 
     @NotNull(message = "Client name is required")
+    @NotBlank(message = "Client name cannot be empty")
     private String clientName;
 
     @NotNull(message = "Farm ID is required")

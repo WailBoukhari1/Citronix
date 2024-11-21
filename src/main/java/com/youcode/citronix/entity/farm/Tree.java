@@ -58,4 +58,22 @@ public class Tree {
             return 20.0;
         }
     }
+
+    public double calculateSeasonalProductivity() {
+        int age = calculateAge();
+        
+        if (age > 20) {
+            return 0.0; // Non-productive after 20 years
+        } else if (age > 10) {
+            return 20.0; // Old tree (>10 years): 20 kg/season
+        } else if (age >= 3) {
+            return 12.0; // Mature tree (3-10 years): 12 kg/season
+        } else {
+            return 2.5; // Young tree (<3 years): 2.5 kg/season
+        }
+    }
+
+    private int calculateAge() {
+        return Period.between(plantationDate, LocalDate.now()).getYears();
+    }
 }

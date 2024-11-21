@@ -1,6 +1,6 @@
 package com.youcode.citronix.service.impl.farm;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.youcode.citronix.dto.request.farm.FieldRequest;
+import com.youcode.citronix.dto.response.PageResponse;
 import com.youcode.citronix.dto.response.farm.FieldResponse;
 import com.youcode.citronix.entity.farm.Farm;
 import com.youcode.citronix.entity.farm.Field;
@@ -43,6 +44,7 @@ public class FieldServiceImpl implements IFieldService {
 
         Field field = fieldMapper.toEntity(request);
         field.setFarm(farm);
+        field.setTrees(new ArrayList<>());
         field = fieldRepository.save(field);
         return fieldMapper.toResponse(field);
     }
@@ -55,26 +57,26 @@ public class FieldServiceImpl implements IFieldService {
 
     @Override
     public PageResponse<FieldResponse> getAllFields(int page, int size, String sortBy, String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? 
-            Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Field> fieldPage = fieldRepository.findByIsDeletedFalse(pageable);
         Page<FieldResponse> responsePage = fieldPage.map(fieldMapper::toResponse);
-        
+
         return PageResponse.fromPage(responsePage);
     }
 
     @Override
     public PageResponse<FieldResponse> getFieldsByFarmId(Long farmId, int page, int size, String sortBy, String sortDir) {
         Farm farm = findFarmById(farmId);
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? 
-            Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())
+                ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
         Pageable pageable = PageRequest.of(page, size, sort);
         Page<Field> fieldPage = fieldRepository.findByFarmAndIsDeletedFalse(farm, pageable);
         Page<FieldResponse> responsePage = fieldPage.map(fieldMapper::toResponse);
-        
+
         return PageResponse.fromPage(responsePage);
     }
 
@@ -82,11 +84,11 @@ public class FieldServiceImpl implements IFieldService {
     public FieldResponse updateField(Long id, FieldRequest request) {
         Field existingField = findFieldById(id);
         Farm farm = findFarmById(request.getFarmId());
-        
+
         fieldValidator.validateFieldUpdate(request, farm, existingField);
 
-        if (!existingField.getName().equalsIgnoreCase(request.getName()) && 
-            fieldRepository.existsByNameIgnoreCaseAndFarmId(request.getName(), request.getFarmId())) {
+        if (!existingField.getName().equalsIgnoreCase(request.getName())
+                && fieldRepository.existsByNameIgnoreCaseAndFarmId(request.getName(), request.getFarmId())) {
             throw new FieldException("Field with name '" + request.getName() + "' already exists in this farm");
         }
 
@@ -99,12 +101,12 @@ public class FieldServiceImpl implements IFieldService {
     @Override
     public void deleteField(Long id) {
         Field field = findFieldById(id);
-        
+
         // Check if field has active trees
         if (!field.getTrees().isEmpty()) {
             throw new FieldException("Cannot delete field with active trees. Please delete all trees first");
         }
-        
+
         field.setIsDeleted(true);
         fieldRepository.save(field);
     }

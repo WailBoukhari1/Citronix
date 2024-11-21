@@ -1,9 +1,8 @@
 package com.youcode.citronix.service.interfaces.farm;
 
-import java.util.List;
 import com.youcode.citronix.dto.request.farm.TreeRequest;
+import com.youcode.citronix.dto.response.PageResponse;
 import com.youcode.citronix.dto.response.farm.TreeResponse;
-import org.springframework.data.domain.Page;
 
 public interface ITreeService {
     TreeResponse createTree(TreeRequest request);

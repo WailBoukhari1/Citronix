@@ -26,16 +26,29 @@ public class Harvest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "farm_id", nullable = false)
+    private Farm farm;
+
     @Column(nullable = false)
     private LocalDateTime harvestDate;
 
-    @OneToMany(mappedBy = "harvest", cascade = CascadeType.ALL)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Season season;
+
+    private String description;
+
+    @OneToMany(mappedBy = "harvest", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private List<HarvestDetail> harvestDetails = new ArrayList<>();
 
     @OneToMany(mappedBy = "harvest", cascade = CascadeType.ALL)
+    @Builder.Default
     private List<Sale> sales = new ArrayList<>();
 
     @Column(nullable = false)
+    @Builder.Default
     private Boolean isDeleted = false;
 
     @Version
@@ -49,39 +62,26 @@ public class Harvest {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Season season;
+    public void addHarvestDetail(HarvestDetail detail) {
+        harvestDetails.add(detail);
+        detail.setHarvest(this);
+    }
 
-    @ManyToOne
-    private Farm farm;
+    public void removeHarvestDetail(HarvestDetail detail) {
+        harvestDetails.remove(detail);
+        detail.setHarvest(null);
+    }
+
+    public boolean isUniquePerSeason() {
+        return farm.getHarvests().stream()
+                .filter(h -> !h.equals(this) && !h.getIsDeleted())
+                .noneMatch(h -> h.getSeason() == this.season);
+    }
 
     public Double getTotalQuantity() {
         return harvestDetails.stream()
                 .filter(detail -> !detail.getIsDeleted())
                 .mapToDouble(HarvestDetail::getQuantity)
                 .sum();
-    }
-
-    public Double getRemainingQuantity() {
-        Double totalSold = sales.stream()
-                .filter(sale -> !sale.getIsDeleted())
-                .mapToDouble(Sale::getQuantity)
-                .sum();
-        return getTotalQuantity() - totalSold;
-    }
-
-    public Double getAveragePrice() {
-        return sales.stream()
-                .filter(sale -> !sale.getIsDeleted())
-                .mapToDouble(Sale::getPricePerUnit)
-                .average()
-                .orElse(0.0);
-    }
-
-    public boolean isUniquePerSeason() {
-        return farm.getHarvests().stream()
-                .filter(h -> h.getSeason() == this.season && !h.getIsDeleted())
-                .count() <= 1;
     }
 }
