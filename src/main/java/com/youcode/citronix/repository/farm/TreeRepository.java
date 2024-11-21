@@ -1,15 +1,17 @@
 package com.youcode.citronix.repository.farm;
 
-import com.youcode.citronix.entity.farm.Field;
-import com.youcode.citronix.entity.farm.Tree;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.youcode.citronix.entity.farm.Field;
+import com.youcode.citronix.entity.farm.Tree;
 
 @Repository
-public interface TreeRepository extends JpaRepository<Tree, Long> {
+public interface TreeRepository extends JpaRepository<Tree, Long>, JpaSpecificationExecutor<Tree> {
     boolean existsByNameIgnoreCaseAndFieldId(String name, Long fieldId);
-    List<Tree> findByFieldAndIsDeletedFalse(Field field);
-    List<Tree> findByIsDeletedFalse();
+    Page<Tree> findByIsDeletedFalse(Pageable pageable);
+    Page<Tree> findByFieldAndIsDeletedFalse(Field field, Pageable pageable);
 }

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.youcode.citronix.dto.request.farm.TreeRequest;
+import com.youcode.citronix.dto.response.PageResponse;
 import com.youcode.citronix.dto.response.farm.TreeResponse;
 import com.youcode.citronix.service.interfaces.farm.ITreeService;
 
@@ -42,18 +43,27 @@ public class TreeController {
     }
 
     @GetMapping("/field/{fieldId}")
-    @Operation(summary = "Get trees by field ID")
+    @Operation(summary = "Get trees by field ID with pagination and sorting")
     @ApiResponse(responseCode = "200", description = "Trees retrieved successfully")
     @ApiResponse(responseCode = "404", description = "Field not found")
-    public ResponseEntity<List<TreeResponse>> getTreesByFieldId(@PathVariable Long fieldId) {
-        return ResponseEntity.ok(treeService.getTreesByFieldId(fieldId));
+    public ResponseEntity<PageResponse<TreeResponse>> getTreesByFieldId(
+            @PathVariable Long fieldId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        return ResponseEntity.ok(treeService.getTreesByFieldId(fieldId, page, size, sortBy, sortDir));
     }
 
     @GetMapping
-    @Operation(summary = "Get all trees")
+    @Operation(summary = "Get all trees with pagination and sorting")
     @ApiResponse(responseCode = "200", description = "Trees retrieved successfully")
-    public ResponseEntity<List<TreeResponse>> getAllTrees() {
-        return ResponseEntity.ok(treeService.getAllTrees());
+    public ResponseEntity<PageResponse<TreeResponse>> getAllTrees(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        return ResponseEntity.ok(treeService.getAllTrees(page, size, sortBy, sortDir));
     }
 
     @PutMapping("/{id}")

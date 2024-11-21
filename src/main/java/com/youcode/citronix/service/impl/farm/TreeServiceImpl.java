@@ -2,6 +2,10 @@ package com.youcode.citronix.service.impl.farm;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,16 +57,28 @@ public class TreeServiceImpl implements ITreeService {
     }
 
     @Override
-    public List<TreeResponse> getAllTrees() {
-        List<Tree> trees = treeRepository.findByIsDeletedFalse();
-        return treeMapper.toResponseList(trees);
+    public PageResponse<TreeResponse> getAllTrees(int page, int size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? 
+            Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Tree> treePage = treeRepository.findByIsDeletedFalse(pageable);
+        Page<TreeResponse> responsePage = treePage.map(treeMapper::toResponse);
+        
+        return PageResponse.fromPage(responsePage);
     }
 
     @Override
-    public List<TreeResponse> getTreesByFieldId(Long fieldId) {
+    public PageResponse<TreeResponse> getTreesByFieldId(Long fieldId, int page, int size, String sortBy, String sortDir) {
         Field field = findFieldById(fieldId);
-        List<Tree> trees = treeRepository.findByFieldAndIsDeletedFalse(field);
-        return treeMapper.toResponseList(trees);
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? 
+            Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Tree> treePage = treeRepository.findByFieldAndIsDeletedFalse(field, pageable);
+        Page<TreeResponse> responsePage = treePage.map(treeMapper::toResponse);
+        
+        return PageResponse.fromPage(responsePage);
     }
 
     @Override

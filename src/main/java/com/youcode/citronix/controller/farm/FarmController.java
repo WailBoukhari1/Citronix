@@ -15,12 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.youcode.citronix.dto.criteria.FarmSearchCriteria;
 import com.youcode.citronix.dto.request.farm.FarmRequest;
 import com.youcode.citronix.dto.response.farm.FarmResponse;
+import com.youcode.citronix.dto.response.PageResponse;
 import com.youcode.citronix.service.interfaces.farm.IFarmService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -52,10 +53,14 @@ public class FarmController {
     }
 
     @GetMapping
-    @Operation(summary = "Get all farms")
+    @Operation(summary = "Get all farms with pagination and sorting")
     @ApiResponse(responseCode = "200", description = "Farms retrieved successfully")
-    public ResponseEntity<List<FarmResponse>> getAllFarms() {
-        return ResponseEntity.ok(farmService.getAllFarms());
+    public ResponseEntity<PageResponse<FarmResponse>> getAllFarms(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        return ResponseEntity.ok(farmService.getAllFarms(page, size, sortBy, sortDir));
     }
 
     @PutMapping("/{id}")
@@ -76,5 +81,17 @@ public class FarmController {
     public ResponseEntity<Void> deleteFarm(@PathVariable Long id) {
         farmService.deleteFarm(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "Search farms with criteria, pagination and sorting")
+    @ApiResponse(responseCode = "200", description = "Search completed successfully")
+    public ResponseEntity<PageResponse<FarmResponse>> searchFarms(
+            @RequestBody FarmSearchCriteria criteria,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        return ResponseEntity.ok(farmService.searchFarms(criteria, page, size, sortBy, sortDir));
     }
 }

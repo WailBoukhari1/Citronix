@@ -2,6 +2,10 @@ package com.youcode.citronix.service.impl.farm;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,16 +54,28 @@ public class FieldServiceImpl implements IFieldService {
     }
 
     @Override
-    public List<FieldResponse> getAllFields() {
-        List<Field> fields = fieldRepository.findByIsDeletedFalse();
-        return fieldMapper.toResponseList(fields);
+    public PageResponse<FieldResponse> getAllFields(int page, int size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? 
+            Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Field> fieldPage = fieldRepository.findByIsDeletedFalse(pageable);
+        Page<FieldResponse> responsePage = fieldPage.map(fieldMapper::toResponse);
+        
+        return PageResponse.fromPage(responsePage);
     }
 
     @Override
-    public List<FieldResponse> getFieldsByFarmId(Long farmId) {
+    public PageResponse<FieldResponse> getFieldsByFarmId(Long farmId, int page, int size, String sortBy, String sortDir) {
         Farm farm = findFarmById(farmId);
-        List<Field> fields = fieldRepository.findByFarmAndIsDeletedFalse(farm);
-        return fieldMapper.toResponseList(fields);
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? 
+            Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Field> fieldPage = fieldRepository.findByFarmAndIsDeletedFalse(farm, pageable);
+        Page<FieldResponse> responsePage = fieldPage.map(fieldMapper::toResponse);
+        
+        return PageResponse.fromPage(responsePage);
     }
 
     @Override
