@@ -1,7 +1,9 @@
 package com.youcode.citronix.exception.sales;
 
-public class SaleException extends RuntimeException {
+import com.youcode.citronix.exception.base.CitronixException;
+
+public class SaleException extends CitronixException {
     public SaleException(String message) {
         super(message);
     }
-} 
+}

@@ -1,0 +1,649 @@
+{
+    "info": {
+      "name": "Citronix Farm Management API",
+      "description": "API for managing farms, fields, and tree capacity",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Farms",
+        "item": [
+          {
+            "name": "Create Farm",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:8080/api/v1/farms",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "farms"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": {
+                  "name": "Sample Farm",
+                  "location": "Sample Location",
+                  "area": 50000
+                }
+              },
+              "response": {
+                "body": {
+                  "id": 1,
+                  "name": "Sample Farm",
+                  "location": "Sample Location",
+                  "area": 50000,
+                  "creationDate": "2024-03-20",
+                  "fieldCount": 0,
+                  "totalFieldArea": 0,
+                  "isDeleted": false,
+                  "version": 0,
+                  "createdAt": "2024-03-20T10:00:00",
+                  "updatedAt": "2024-03-20T10:00:00"
+                }
+              }
+            }
+          },
+          {
+            "name": "Get Farm by ID",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/farms/{{farmId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "farms", "{{farmId}}"]
+              }
+            }
+          },
+          {
+            "name": "Get All Farms",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/farms",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "farms"]
+              }
+            }
+          },
+          {
+            "name": "Update Farm",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:8080/api/v1/farms/{{farmId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "farms", "{{farmId}}"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": {
+                  "name": "Updated Farm",
+                  "location": "Updated Location",
+                  "area": 60000
+                }
+              }
+            }
+          },
+          {
+            "name": "Delete Farm",
+            "request": {
+              "method": "DELETE",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/farms/{{farmId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "farms", "{{farmId}}"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Fields",
+        "item": [
+          {
+            "name": "Create Field",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:8080/api/v1/fields",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "fields"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": {
+                  "name": "Sample Field",
+                  "area": 5000,
+                  "farmId": "{{farmId}}"
+                }
+              },
+              "response": {
+                "body": {
+                  "id": 1,
+                  "name": "Sample Field",
+                  "area": 5000,
+                  "farmId": 1,
+                  "farmName": "Sample Farm",
+                  "isDeleted": false,
+                  "version": 0,
+                  "createdAt": "2024-03-20T10:00:00",
+                  "updatedAt": "2024-03-20T10:00:00"
+                }
+              }
+            }
+          },
+          {
+            "name": "Get Field by ID",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/fields/{{fieldId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "fields", "{{fieldId}}"]
+              }
+            }
+          },
+          {
+            "name": "Get Fields by Farm ID",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/fields/farm/{{farmId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "fields", "farm", "{{farmId}}"]
+              }
+            }
+          },
+          {
+            "name": "Get All Fields",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/fields",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "fields"]
+              }
+            }
+          },
+          {
+            "name": "Update Field",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:8080/api/v1/fields/{{fieldId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "fields", "{{fieldId}}"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": {
+                  "name": "Updated Field",
+                  "area": 6000,
+                  "farmId": "{{farmId}}"
+                }
+              }
+            }
+          },
+          {
+            "name": "Delete Field",
+            "request": {
+              "method": "DELETE",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/fields/{{fieldId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "fields", "{{fieldId}}"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Trees",
+        "item": [
+          {
+            "name": "Create Tree",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:8080/api/v1/trees",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "trees"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": {
+                  "name": "Sample Tree",
+                  "fieldId": "{{fieldId}}",
+                  "species": "Orange",
+                  "plantingDate": "2024-03-20"
+                }
+              },
+              "response": {
+                "body": {
+                  "id": 1,
+                  "name": "Sample Tree",
+                  "fieldId": 1,
+                  "fieldName": "Sample Field",
+                  "species": "Orange", 
+                  "plantingDate": "2024-03-20",
+                  "isDeleted": false,
+                  "version": 0,
+                  "createdAt": "2024-03-20T10:00:00",
+                  "updatedAt": "2024-03-20T10:00:00"
+                }
+              }
+            }
+          },
+          {
+            "name": "Get Tree by ID",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/trees/{{treeId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "trees", "{{treeId}}"]
+              }
+            }
+          },
+          {
+            "name": "Get Trees by Field ID",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/trees/field/{{fieldId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "trees", "field", "{{fieldId}}"]
+              }
+            }
+          },
+          {
+            "name": "Get All Trees",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/trees",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "trees"]
+              }
+            }
+          },
+          {
+            "name": "Update Tree",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:8080/api/v1/trees/{{treeId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "trees", "{{treeId}}"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": {
+                  "name": "Updated Tree",
+                  "fieldId": "{{fieldId}}"
+                }
+              }
+            }
+          },
+          {
+            "name": "Delete Tree",
+            "request": {
+              "method": "DELETE",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/trees/{{treeId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "trees", "{{treeId}}"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Harvests",
+        "item": [
+          {
+            "name": "Create Harvest",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:8080/api/v1/harvests",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "harvests"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": {
+                  "farmId": "{{farmId}}",
+                  "harvestDate": "2024-03-20T10:00:00",
+                  "harvestDetails": [
+                    {
+                      "treeId": "{{treeId}}",
+                      "fieldId": "{{fieldId}}",
+                      "quantity": 100.5
+                    }
+                  ]
+                }
+              },
+              "response": {
+                "body": {
+                  "id": 1,
+                  "harvestDate": "2024-03-20T10:00:00",
+                  "harvestDetails": [
+                    {
+                      "id": 1,
+                      "harvestId": 1,
+                      "treeId": 1,
+                      "treeName": "Sample Tree",
+                      "fieldId": 1,
+                      "fieldName": "Sample Field",
+                      "quantity": 100.5
+                    }
+                  ],
+                  "totalQuantity": 100.5,
+                  "isDeleted": false,
+                  "version": 0,
+                  "createdAt": "2024-03-20T10:00:00",
+                  "updatedAt": "2024-03-20T10:00:00"
+                }
+              }
+            }
+          },
+          {
+            "name": "Get Harvest by ID",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/harvests/{{harvestId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "harvests", "{{harvestId}}"]
+              }
+            }
+          },
+          {
+            "name": "Get All Harvests",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/harvests",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "harvests"]
+              }
+            }
+          },
+          {
+            "name": "Update Harvest",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:8080/api/v1/harvests/{{harvestId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "harvests", "{{harvestId}}"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": {
+                  "farmId": "{{farmId}}",
+                  "harvestDate": "2024-03-21T10:00:00",
+                  "description": "Updated Spring Harvest",
+                  "harvestDetails": [
+                    {
+                      "harvestId": "{{harvestId}}",
+                      "treeId": "{{treeId}}",
+                      "fieldId": "{{fieldId}}",
+                      "quantity": 120.5
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "name": "Delete Harvest",
+            "request": {
+              "method": "DELETE",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/harvests/{{harvestId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "harvests", "{{harvestId}}"]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "name": "Sales",
+        "item": [
+          {
+            "name": "Create Sale",
+            "request": {
+              "method": "POST",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:8080/api/v1/sales",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "sales"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": {
+                  "farmId": "{{farmId}}",
+                  "harvestId": "{{harvestId}}",
+                  "saleDate": "2024-03-20",
+                  "quantity": 50.5,
+                  "pricePerUnit": 10.5,
+                  "clientName": "Sample Client"
+                }
+              },
+              "response": {
+                "body": {
+                  "id": 1,
+                  "saleDate": "2024-03-20",
+                  "quantity": 50.5,
+                  "pricePerUnit": 10.5,
+                  "revenue": 530.25,
+                  "clientName": "Sample Client",
+                  "farmId": 1,
+                  "farmName": "Sample Farm",
+                  "harvestId": 1,
+                  "harvestDate": "2024-03-20T10:00:00",
+                  "isDeleted": false,
+                  "version": 0,
+                  "createdAt": "2024-03-20T10:00:00",
+                  "updatedAt": "2024-03-20T10:00:00"
+                }
+              }
+            }
+          },
+          {
+            "name": "Get Sale by ID",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/sales/{{saleId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "sales", "{{saleId}}"]
+              }
+            }
+          },
+          {
+            "name": "Get All Sales",
+            "request": {
+              "method": "GET",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/sales",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "sales"]
+              }
+            }
+          },
+          {
+            "name": "Update Sale",
+            "request": {
+              "method": "PUT",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "url": {
+                "raw": "http://localhost:8080/api/v1/sales/{{saleId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "sales", "{{saleId}}"]
+              },
+              "body": {
+                "mode": "raw",
+                "raw": {
+                  "saleDate": "2024-03-21",
+                  "quantity": 60.5,
+                  "pricePerUnit": 11.5,
+                  "clientName": "Updated Client",
+                  "farmId": "{{farmId}}",
+                  "harvestId": "{{harvestId}}"
+                }
+              }
+            }
+          },
+          {
+            "name": "Delete Sale",
+            "request": {
+              "method": "DELETE",
+              "url": {
+                "raw": "http://localhost:8080/api/v1/sales/{{saleId}}",
+                "protocol": "http",
+                "host": ["localhost"],
+                "port": "8080",
+                "path": ["api", "v1", "sales", "{{saleId}}"]
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "variable": [
+      {
+        "key": "farmId",
+        "value": "1"
+      },
+      {
+        "key": "fieldId",
+        "value": "1"
+      },
+      {
+        "key": "treeId",
+        "value": "1"
+      },
+      {
+        "key": "harvestId",
+        "value": "1"
+      },
+      {
+        "key": "saleId",
+        "value": "1"
+      }
+    ]
+  }

@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.youcode.citronix.dto.request.farm.FarmRequest;
 import com.youcode.citronix.dto.response.farm.FarmResponse;
 import com.youcode.citronix.entity.farm.Farm;
-import com.youcode.citronix.exception.ResourceNotFoundException;
 import com.youcode.citronix.exception.farm.FarmException;
 import com.youcode.citronix.mapper.farm.FarmMapper;
 import com.youcode.citronix.repository.farm.FarmRepository;
@@ -31,7 +30,7 @@ public class FarmServiceImpl implements IFarmService {
         farmValidator.validateFarmCreation(request);
         
         if (farmRepository.existsByNameIgnoreCase(request.getName())) {
-            throw new FarmException("Farm with name " + request.getName() + " already exists");
+            throw new FarmException("Farm with name '" + request.getName() + "' already exists");
         }
 
         Farm farm = farmMapper.toEntity(request);
@@ -58,7 +57,7 @@ public class FarmServiceImpl implements IFarmService {
 
         if (!existingFarm.getName().equalsIgnoreCase(request.getName()) && 
             farmRepository.existsByNameIgnoreCase(request.getName())) {
-            throw new FarmException("Farm with name " + request.getName() + " already exists");
+            throw new FarmException("Farm with name '" + request.getName() + "' already exists");
         }
 
         farmMapper.updateEntity(existingFarm, request);
@@ -69,12 +68,18 @@ public class FarmServiceImpl implements IFarmService {
     @Override
     public void deleteFarm(Long id) {
         Farm farm = findFarmById(id);
+        
+        // Check if farm has active fields
+        if (!farm.getFields().isEmpty()) {
+            throw new FarmException("Cannot delete farm with active fields. Please delete all fields first");
+        }
+        
         farm.setIsDeleted(true);
         farmRepository.save(farm);
     }
 
     private Farm findFarmById(Long id) {
         return farmRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Farm not found with id: " + id));
+                .orElseThrow(() -> new FarmException("Farm not found with ID: " + id));
     }
 }

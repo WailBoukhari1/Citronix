@@ -9,7 +9,6 @@ import com.youcode.citronix.dto.request.farm.FieldRequest;
 import com.youcode.citronix.dto.response.farm.FieldResponse;
 import com.youcode.citronix.entity.farm.Farm;
 import com.youcode.citronix.entity.farm.Field;
-import com.youcode.citronix.exception.ResourceNotFoundException;
 import com.youcode.citronix.exception.farm.FieldException;
 import com.youcode.citronix.mapper.farm.FieldMapper;
 import com.youcode.citronix.repository.farm.FarmRepository;
@@ -35,7 +34,7 @@ public class FieldServiceImpl implements IFieldService {
         fieldValidator.validateFieldCreation(request, farm);
 
         if (fieldRepository.existsByNameIgnoreCaseAndFarmId(request.getName(), request.getFarmId())) {
-            throw new FieldException("Field with name " + request.getName() + " already exists in this farm");
+            throw new FieldException("Field with name '" + request.getName() + "' already exists in this farm");
         }
 
         Field field = fieldMapper.toEntity(request);
@@ -72,7 +71,7 @@ public class FieldServiceImpl implements IFieldService {
 
         if (!existingField.getName().equalsIgnoreCase(request.getName()) && 
             fieldRepository.existsByNameIgnoreCaseAndFarmId(request.getName(), request.getFarmId())) {
-            throw new FieldException("Field with name " + request.getName() + " already exists in this farm");
+            throw new FieldException("Field with name '" + request.getName() + "' already exists in this farm");
         }
 
         fieldMapper.updateEntity(existingField, request);
@@ -84,17 +83,23 @@ public class FieldServiceImpl implements IFieldService {
     @Override
     public void deleteField(Long id) {
         Field field = findFieldById(id);
+        
+        // Check if field has active trees
+        if (!field.getTrees().isEmpty()) {
+            throw new FieldException("Cannot delete field with active trees. Please delete all trees first");
+        }
+        
         field.setIsDeleted(true);
         fieldRepository.save(field);
     }
 
     private Field findFieldById(Long id) {
         return fieldRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Field not found with id: " + id));
+                .orElseThrow(() -> new FieldException("Field not found with ID: " + id));
     }
 
     private Farm findFarmById(Long id) {
         return farmRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Farm not found with id: " + id));
+                .orElseThrow(() -> new FieldException("Farm not found with ID: " + id));
     }
 }

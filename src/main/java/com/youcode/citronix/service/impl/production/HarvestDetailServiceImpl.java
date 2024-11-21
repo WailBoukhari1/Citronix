@@ -11,7 +11,7 @@ import com.youcode.citronix.entity.farm.Field;
 import com.youcode.citronix.entity.farm.Tree;
 import com.youcode.citronix.entity.production.Harvest;
 import com.youcode.citronix.entity.production.HarvestDetail;
-import com.youcode.citronix.exception.ResourceNotFoundException;
+import com.youcode.citronix.exception.production.HarvestDetailException;
 import com.youcode.citronix.mapper.production.HarvestDetailMapper;
 import com.youcode.citronix.repository.farm.FieldRepository;
 import com.youcode.citronix.repository.farm.TreeRepository;
@@ -84,27 +84,33 @@ public class HarvestDetailServiceImpl implements IHarvestDetailService {
     @Override
     public void deleteHarvestDetail(Long id) {
         HarvestDetail harvestDetail = findHarvestDetailById(id);
+        
+        // Check if harvest detail is referenced in any sales
+        if (!harvestDetail.getHarvest().getSales().isEmpty()) {
+            throw new HarvestDetailException("Cannot delete harvest detail that is referenced in sales. Please delete associated sales first");
+        }
+        
         harvestDetail.setIsDeleted(true);
         harvestDetailRepository.save(harvestDetail);
     }
 
     private HarvestDetail findHarvestDetailById(Long id) {
         return harvestDetailRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("HarvestDetail not found with id: " + id));
+                .orElseThrow(() -> new HarvestDetailException("Harvest detail not found with ID: " + id));
     }
 
     private Harvest findHarvestById(Long id) {
         return harvestRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Harvest not found with id: " + id));
+                .orElseThrow(() -> new HarvestDetailException("Harvest not found with ID: " + id));
     }
 
     private Tree findTreeById(Long id) {
         return treeRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Tree not found with id: " + id));
+                .orElseThrow(() -> new HarvestDetailException("Tree not found with ID: " + id));
     }
 
     private Field findFieldById(Long id) {
         return fieldRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Field not found with id: " + id));
+                .orElseThrow(() -> new HarvestDetailException("Field not found with ID: " + id));
     }
 }

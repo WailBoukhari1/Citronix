@@ -8,7 +8,7 @@ import com.youcode.citronix.dto.request.production.HarvestRequest;
 import com.youcode.citronix.dto.response.production.HarvestResponse;
 import com.youcode.citronix.entity.farm.Farm;
 import com.youcode.citronix.entity.production.Harvest;
-import com.youcode.citronix.exception.ResourceNotFoundException;
+import com.youcode.citronix.exception.production.HarvestException;
 import com.youcode.citronix.mapper.production.HarvestMapper;
 import com.youcode.citronix.repository.farm.FarmRepository;
 import com.youcode.citronix.repository.production.HarvestRepository;
@@ -68,17 +68,23 @@ public class HarvestServiceImpl implements IHarvestService {
     @Override
     public void deleteHarvest(Long id) {
         Harvest harvest = findHarvestById(id);
+        
+        // Check if harvest has active harvest details
+        if (!harvest.getHarvestDetails().isEmpty()) {
+            throw new HarvestException("Cannot delete harvest with active harvest details. Please delete all harvest details first");
+        }
+        
         harvest.setIsDeleted(true);
         harvestRepository.save(harvest);
     }
 
     private Harvest findHarvestById(Long id) {
         return harvestRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Harvest not found with id: " + id));
+                .orElseThrow(() -> new HarvestException("Harvest not found with ID: " + id));
     }
 
     private Farm findFarmById(Long id) {
         return farmRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Farm not found with id: " + id));
+                .orElseThrow(() -> new HarvestException("Farm not found with ID: " + id));
     }
 }

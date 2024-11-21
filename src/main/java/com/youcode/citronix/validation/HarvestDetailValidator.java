@@ -1,12 +1,13 @@
 package com.youcode.citronix.validation;
 
+import org.springframework.stereotype.Component;
+
 import com.youcode.citronix.dto.request.production.HarvestDetailRequest;
 import com.youcode.citronix.entity.farm.Field;
 import com.youcode.citronix.entity.farm.Tree;
 import com.youcode.citronix.entity.production.Harvest;
 import com.youcode.citronix.entity.production.HarvestDetail;
 import com.youcode.citronix.exception.production.HarvestDetailException;
-import org.springframework.stereotype.Component;
 
 @Component
 public class HarvestDetailValidator {

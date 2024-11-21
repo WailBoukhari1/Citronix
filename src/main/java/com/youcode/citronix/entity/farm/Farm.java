@@ -36,15 +36,19 @@ public class Farm {
     @Column(nullable = false)
     private LocalDate creationDate;
 
+    @Builder.Default
     @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL)
     private List<Field> fields = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL)
     private List<Harvest> harvests = new ArrayList<>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "farm", cascade = CascadeType.ALL)
     private List<Sale> sales = new ArrayList<>();
 
+    @Builder.Default
     @Column(nullable = false)
     private Boolean isDeleted = false;
 

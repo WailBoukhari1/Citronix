@@ -1,7 +1,9 @@
 package com.youcode.citronix.exception.farm;
 
-public class FarmException extends RuntimeException {
+import com.youcode.citronix.exception.base.CitronixException;
+
+public class FarmException extends CitronixException {
     public FarmException(String message) {
         super(message);
     }
-} 
+}

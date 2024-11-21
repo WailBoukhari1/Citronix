@@ -1,7 +1,9 @@
 package com.youcode.citronix.exception.production;
 
-public class HarvestException extends RuntimeException {
+import com.youcode.citronix.exception.base.CitronixException;
+
+public class HarvestException extends CitronixException {
     public HarvestException(String message) {
         super(message);
     }
-} 
+}

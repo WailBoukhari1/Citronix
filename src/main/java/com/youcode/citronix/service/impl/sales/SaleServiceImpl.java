@@ -1,22 +1,24 @@
 package com.youcode.citronix.service.impl.sales;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.youcode.citronix.dto.request.sales.SaleRequest;
 import com.youcode.citronix.dto.response.sales.SaleResponse;
 import com.youcode.citronix.entity.farm.Farm;
 import com.youcode.citronix.entity.production.Harvest;
 import com.youcode.citronix.entity.sales.Sale;
-import com.youcode.citronix.exception.ResourceNotFoundException;
+import com.youcode.citronix.exception.sales.SaleException;
 import com.youcode.citronix.mapper.sales.SaleMapper;
 import com.youcode.citronix.repository.farm.FarmRepository;
 import com.youcode.citronix.repository.production.HarvestRepository;
 import com.youcode.citronix.repository.sales.SaleRepository;
 import com.youcode.citronix.service.interfaces.sales.ISaleService;
 import com.youcode.citronix.validation.SaleValidator;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -75,22 +77,23 @@ public class SaleServiceImpl implements ISaleService {
     @Override
     public void deleteSale(Long id) {
         Sale sale = findSaleById(id);
+        
         sale.setIsDeleted(true);
         saleRepository.save(sale);
     }
 
     private Sale findSaleById(Long id) {
         return saleRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Sale not found with id: " + id));
+                .orElseThrow(() -> new SaleException("Sale not found with ID: " + id));
     }
 
     private Farm findFarmById(Long id) {
         return farmRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Farm not found with id: " + id));
+                .orElseThrow(() -> new SaleException("Farm not found with ID: " + id));
     }
 
     private Harvest findHarvestById(Long id) {
         return harvestRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Harvest not found with id: " + id));
+                .orElseThrow(() -> new SaleException("Harvest not found with ID: " + id));
     }
 }

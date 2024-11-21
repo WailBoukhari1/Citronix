@@ -134,6 +134,9 @@
                         <arg>-Amapstruct.verbose=true</arg>
                         <arg>-Amapstruct.defaultComponentModel=spring</arg>
                     </compilerArgs>
+                    <annotationProcessorArgs>
+                        <arg>-Amapstruct.verbose=true</arg>
+                    </annotationProcessorArgs>
                 </configuration>
             </plugin>
         </plugins>

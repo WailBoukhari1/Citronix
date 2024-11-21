@@ -1,11 +1,9 @@
 package com.youcode.citronix.exception.farm;
 
-public class TreeException extends RuntimeException {
+import com.youcode.citronix.exception.base.CitronixException;
+
+public class TreeException extends CitronixException {
     public TreeException(String message) {
         super(message);
-    }
-
-    public TreeException(String message, Throwable cause) {
-        super(message, cause);
     }
 } 
