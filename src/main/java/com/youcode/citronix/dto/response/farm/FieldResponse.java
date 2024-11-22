@@ -16,9 +16,7 @@ public class FieldResponse {
     private String name;
     private Double area;
     private Long farmId;
-    private Double treeDensity;
-    private Long treeCount;
-    private Long harvestCount;
+    private String farmName;
     private Boolean isDeleted;
     private Long version;
     private LocalDateTime createdAt;

@@ -1,23 +1,25 @@
 package com.youcode.citronix.service.impl.farm;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.youcode.citronix.dto.criteria.FarmSearchCriteria;
 import com.youcode.citronix.dto.request.farm.FarmRequest;
+import com.youcode.citronix.dto.response.PageResponse;
 import com.youcode.citronix.dto.response.farm.FarmResponse;
 import com.youcode.citronix.entity.farm.Farm;
-import com.youcode.citronix.exception.ResourceNotFoundException;
 import com.youcode.citronix.exception.farm.FarmException;
 import com.youcode.citronix.mapper.farm.FarmMapper;
 import com.youcode.citronix.repository.farm.FarmRepository;
 import com.youcode.citronix.service.interfaces.farm.IFarmService;
+import com.youcode.citronix.specification.FarmSpecification;
 import com.youcode.citronix.validation.FarmValidator;
 
-import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -28,13 +30,14 @@ public class FarmServiceImpl implements IFarmService {
     private final FarmRepository farmRepository;
     private final FarmMapper farmMapper;
     private final FarmValidator farmValidator;
+    private final FarmSpecification farmSpecification;
 
     @Override
     public FarmResponse createFarm(FarmRequest request) {
         farmValidator.validateFarmCreation(request);
         
         if (farmRepository.existsByNameIgnoreCase(request.getName())) {
-            throw new FarmException("Farm with name " + request.getName() + " already exists");
+            throw new FarmException("Farm with name '" + request.getName() + "' already exists");
         }
 
         Farm farm = farmMapper.toEntity(request);
@@ -49,9 +52,15 @@ public class FarmServiceImpl implements IFarmService {
     }
 
     @Override
-    public List<FarmResponse> getAllFarms() {
-        List<Farm> farms = farmRepository.findAll();
-        return farmMapper.toResponseList(farms);
+    public PageResponse<FarmResponse> getAllFarms(int page, int size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? 
+            Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Farm> farmPage = farmRepository.findByIsDeletedFalse(pageable);
+        Page<FarmResponse> responsePage = farmPage.map(farmMapper::toResponse);
+        
+        return PageResponse.fromPage(responsePage);
     }
 
     @Override
@@ -61,7 +70,7 @@ public class FarmServiceImpl implements IFarmService {
 
         if (!existingFarm.getName().equalsIgnoreCase(request.getName()) && 
             farmRepository.existsByNameIgnoreCase(request.getName())) {
-            throw new FarmException("Farm with name " + request.getName() + " already exists");
+            throw new FarmException("Farm with name '" + request.getName() + "' already exists");
         }
 
         farmMapper.updateEntity(existingFarm, request);
@@ -72,42 +81,31 @@ public class FarmServiceImpl implements IFarmService {
     @Override
     public void deleteFarm(Long id) {
         Farm farm = findFarmById(id);
+        
+        // Check if farm has active fields
+        if (!farm.getFields().isEmpty()) {
+            throw new FarmException("Cannot delete farm with active fields. Please delete all fields first");
+        }
+        
         farm.setIsDeleted(true);
         farmRepository.save(farm);
     }
 
     @Override
-    public List<FarmResponse> searchFarms(String name, String location, Double minArea, Double maxArea) {
-        Specification<Farm> spec = (root, query, cb) -> {
-            List<Predicate> predicates = new ArrayList<>();
-
-            if (name != null && !name.isEmpty()) {
-                predicates.add(cb.like(cb.lower(root.get("name")), "%" + name.toLowerCase() + "%"));
-            }
-
-            if (location != null && !location.isEmpty()) {
-                predicates.add(cb.like(cb.lower(root.get("location")), "%" + location.toLowerCase() + "%"));
-            }
-
-            if (minArea != null) {
-                predicates.add(cb.greaterThanOrEqualTo(root.get("area"), minArea));
-            }
-
-            if (maxArea != null) {
-                predicates.add(cb.lessThanOrEqualTo(root.get("area"), maxArea));
-            }
-
-            predicates.add(cb.isFalse(root.get("isDeleted")));
-
-            return cb.and(predicates.toArray(new Predicate[0]));
-        };
-
-        List<Farm> farms = farmRepository.findAll(spec);
-        return farmMapper.toResponseList(farms);
+    public PageResponse<FarmResponse> searchFarms(FarmSearchCriteria criteria, int page, int size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? 
+            Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Specification<Farm> spec = farmSpecification.withCriteria(criteria);        
+        Page<Farm> farmPage = farmRepository.findAll(spec, pageable);
+        Page<FarmResponse> responsePage = farmPage.map(farmMapper::toResponse);
+        
+        return PageResponse.fromPage(responsePage);
     }
 
     private Farm findFarmById(Long id) {
         return farmRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Farm not found with id: " + id));
+                .orElseThrow(() -> new FarmException("Farm not found with ID: " + id));
     }
 }

@@ -1,0 +1,342 @@
+{
+  "info": {
+    "name": "Citronix API Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Farms",
+      "item": [
+        {
+          "name": "Create Farm",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/farms",
+            "header": {
+              "Content-Type": "application/json"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "name": "Sample Farm",
+                "location": "Sample Location",
+                "area": 100.5
+              }
+            }
+          }
+        },
+        {
+          "name": "Get Farm by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/farms/{id}"
+          }
+        },
+        {
+          "name": "Get All Farms",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/farms",
+            "query": [
+              {"key": "page", "value": "0"},
+              {"key": "size", "value": "10"},
+              {"key": "sortBy", "value": "id"},
+              {"key": "sortDir", "value": "asc"}
+            ]
+          }
+        },
+        {
+          "name": "Update Farm",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/v1/farms/{id}",
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "name": "Updated Farm",
+                "location": "Updated Location",
+                "area": 150.5
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete Farm",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/farms/{id}"
+          }
+        },
+        {
+          "name": "Search Farms",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/farms/search",
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "name": "Farm",
+                "location": "Location",
+                "minArea": 50,
+                "maxArea": 200
+              }
+            },
+            "query": [
+              {"key": "page", "value": "0"},
+              {"key": "size", "value": "10"},
+              {"key": "sortBy", "value": "id"},
+              {"key": "sortDir", "value": "asc"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Fields",
+      "item": [
+        {
+          "name": "Create Field",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/fields",
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "name": "Sample Field",
+                "area": 50.5,
+                "farmId": 1
+              }
+            }
+          }
+        },
+        {
+          "name": "Get Field by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/fields/{id}"
+          }
+        },
+        {
+          "name": "Get All Fields",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/fields",
+            "query": [
+              {"key": "page", "value": "0"},
+              {"key": "size", "value": "10"},
+              {"key": "sortBy", "value": "id"},
+              {"key": "sortDir", "value": "asc"}
+            ]
+          }
+        },
+        {
+          "name": "Update Field",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/v1/fields/{id}",
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "name": "Updated Field",
+                "area": 75.5,
+                "farmId": 1
+              }
+            }
+          }
+        },
+        {
+          "name": "Delete Field",
+          "request": {
+            "method": "DELETE",
+            "url": "{{base_url}}/api/v1/fields/{id}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Trees",
+      "item": [
+        {
+          "name": "Create Tree",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/trees",
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "name": "Sample Tree",
+                "species": "Sample Species",
+                "plantingDate": "2024-03-20",
+                "fieldId": 1
+              }
+            }
+          }
+        },
+        {
+          "name": "Get Tree by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/trees/{id}"
+          }
+        },
+        {
+          "name": "Get Trees by Field",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/trees/field/{fieldId}",
+            "query": [
+              {"key": "page", "value": "0"},
+              {"key": "size", "value": "10"},
+              {"key": "sortBy", "value": "id"},
+              {"key": "sortDir", "value": "asc"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Harvests",
+      "item": [
+        {
+          "name": "Create Harvest",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/harvests",
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "harvestDate": "2024-03-20",
+                "farmId": 1,
+                "fieldId": 1
+              }
+            }
+          }
+        },
+        {
+          "name": "Get Harvest by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/harvests/{id}"
+          }
+        },
+        {
+          "name": "Get All Harvests",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/harvests",
+            "query": [
+              {"key": "page", "value": "0"},
+              {"key": "size", "value": "10"},
+              {"key": "sortBy", "value": "id"},
+              {"key": "sortDir", "value": "asc"}
+            ]
+          }
+        },
+        {
+          "name": "Get Harvests by Field",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/harvests/field/{fieldId}",
+            "query": [
+              {"key": "page", "value": "0"},
+              {"key": "size", "value": "10"},
+              {"key": "sortBy", "value": "id"},
+              {"key": "sortDir", "value": "asc"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Sales",
+      "item": [
+        {
+          "name": "Create Sale",
+          "request": {
+            "method": "POST",
+            "url": "{{base_url}}/api/v1/sales",
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "saleDate": "2024-03-20",
+                "quantity": 25.5,
+                "pricePerUnit": 10.5,
+                "farmId": 1,
+                "harvestId": 1
+              }
+            }
+          }
+        },
+        {
+          "name": "Get Sale by ID",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/sales/{id}"
+          }
+        },
+        {
+          "name": "Get All Sales",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/sales",
+            "query": [
+              {"key": "page", "value": "0"},
+              {"key": "size", "value": "10"},
+              {"key": "sortBy", "value": "id"},
+              {"key": "sortDir", "value": "asc"}
+            ]
+          }
+        },
+        {
+          "name": "Get Sales by Farm",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/sales/farm/{farmId}",
+            "query": [
+              {"key": "page", "value": "0"},
+              {"key": "size", "value": "10"},
+              {"key": "sortBy", "value": "id"},
+              {"key": "sortDir", "value": "asc"}
+            ]
+          }
+        },
+        {
+          "name": "Get Sales by Harvest",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/api/v1/sales/harvest/{harvestId}",
+            "query": [
+              {"key": "page", "value": "0"},
+              {"key": "size", "value": "10"},
+              {"key": "sortBy", "value": "id"},
+              {"key": "sortDir", "value": "asc"}
+            ]
+          }
+        },
+        {
+          "name": "Update Sale",
+          "request": {
+            "method": "PUT",
+            "url": "{{base_url}}/api/v1/sales/{id}",
+            "body": {
+              "mode": "raw",
+              "raw": {
+                "saleDate": "2024-03-21",
+                "quantity": 30.5,
+                "pricePerUnit": 12.5,
+                "farmId": 1,
+                "harvestId": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    }
+  ]
+}
